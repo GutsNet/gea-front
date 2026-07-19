@@ -1,44 +1,34 @@
 <template>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <h1>GEA</h1>
-      <nav>
-        <router-link to="/dashboard">Dashboard</router-link>
-        <router-link to="/arboles">Árboles</router-link>
-        <router-link to="/reportes">Reportes</router-link>
-        <router-link to="/mapa">Mapa</router-link>
-      </nav>
-    </aside>
-
-    <main class="content">
-      <router-view />
-    </main>
-  </div>
+  <component :is="layoutComponent">
+    <router-view />
+  </component>
 </template>
 
-<style scoped>
-.app-shell {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  min-height: 100vh;
-  font-family: Arial, sans-serif;
-  background: #f6f8fb;
+<script setup>
+import { computed, onMounted, onBeforeUnmount } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import DefaultLayout from './layouts/DefaultLayout.vue';
+import AuthLayout from './layouts/AuthLayout.vue';
+
+const route = useRoute();
+const router = useRouter();
+
+const layoutComponent = computed(() => {
+  return route.meta.layout === 'auth' ? AuthLayout : DefaultLayout;
+});
+
+// Disparado por src/api/client.js cuando el refresh token también expiró/es inválido.
+function handleSessionExpired() {
+  if (route.name !== 'Login') {
+    router.replace({ name: 'Login', query: { expired: '1' } });
+  }
 }
-.sidebar {
-  background: #16324f;
-  color: white;
-  padding: 1rem;
-}
-.sidebar nav {
-  display: grid;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-.sidebar a {
-  color: white;
-  text-decoration: none;
-}
-.content {
-  padding: 1rem;
-}
-</style>
+
+onMounted(() => {
+  window.addEventListener('gea:session-expired', handleSessionExpired);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('gea:session-expired', handleSessionExpired);
+});
+</script>

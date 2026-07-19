@@ -1,0 +1,32 @@
+:root {
+  --gea-primary: #1f7a4d;
+  --gea-primary-dark: #14532d;
+  --gea-primary-light: #3fa66c;
+  --gea-bg: #f4f7f5;
+  --gea-surface: #ffffff;
+  --gea-text: #1c2b22;
+  --gea-muted: #6b7a70;
+  --gea-border: #e1e7e3;
+  --gea-danger: #b42318;
+  --gea-danger-bg: #fdecea;
+  --gea-radius: 14px;
+  --gea-radius-sm: 8px;
+  --gea-shadow: 0 20px 45px -20px rgba(20, 83, 45, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+  background: var(--gea-bg);
+  color: var(--gea-text);
+}
