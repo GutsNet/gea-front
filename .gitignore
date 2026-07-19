@@ -1,0 +1,44 @@
+# Dependencias
+node_modules/
+
+# Archivos de construcción (Vite/Vue)
+dist/
+dist-ssr/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Variables de entorno (no subir secretos al repositorio)
+.env
+.env.local
+.env.*.local
+
+# Archivos generados por el Sistema Operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Configuraciones de Editores/IDEs
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Caché y archivos temporales
+.npm
+.eslintcache
+.stylelintcache
