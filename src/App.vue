@@ -3,6 +3,7 @@
     <component :is="layoutComponent">
       <router-view />
     </component>
+    <NotificationsHost />
   </v-app>
 </template>
 
@@ -11,6 +12,8 @@ import { computed, onMounted, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import DefaultLayout from './layouts/DefaultLayout.vue';
 import AuthLayout from './layouts/AuthLayout.vue';
+import NotificationsHost from './components/common/NotificationsHost.vue';
+import { notify } from './services/notifications';
 
 const route = useRoute();
 const router = useRouter();
@@ -21,6 +24,7 @@ const layoutComponent = computed(() => {
 
 function handleSessionExpired() {
   if (route.name !== 'Login') {
+    notify.warning('Tu sesión expiró. Vuelve a iniciar sesión.');
     router.replace({ name: 'Login', query: { expired: '1' } });
   }
 }

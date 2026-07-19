@@ -17,17 +17,6 @@
         <div class="mobile-form-container">
           <h2 class="mobile-form-title mb-5">Iniciar sesión</h2>
 
-          <!-- Alerta de error para móvil -->
-          <v-alert
-            v-if="errorMessage"
-            type="error"
-            variant="tonal"
-            density="compact"
-            class="mb-4 text-left"
-          >
-            {{ errorMessage }}
-          </v-alert>
-
           <v-form @submit.prevent="handleLogin" :disabled="isLoading">
             <label class="mobile-field-label">Matrícula</label>
             <v-text-field
@@ -130,17 +119,6 @@
             Ingresa tus credenciales para ingresar a la plataforma
           </p>
 
-          <!-- Alerta de error para escritorio -->
-          <v-alert
-            v-if="errorMessage"
-            type="error"
-            variant="tonal"
-            density="compact"
-            class="mb-4 text-left"
-          >
-            {{ errorMessage }}
-          </v-alert>
-
           <v-form @submit.prevent="handleLogin" :disabled="isLoading">
             <label class="field-label">Matrícula</label>
             <v-text-field
@@ -219,6 +197,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { loginWithCredentials, getRememberedMatricula } from '../services/authService'
+import { notify } from '../services/notifications'
 
 // Imágenes y SVGs
 import logoGea from '../assets/images/logo-gea.png'
@@ -239,9 +218,9 @@ const password = ref('')
 const showPassword = ref(false)
 const rememberMe = ref(false)
 
-// Estados de la interfaz
+// Estado de la interfaz (el error ya no vive aquí, se muestra como
+// notificación flotante mediante notify.error)
 const isLoading = ref(false)
-const errorMessage = ref('')
 
 // Si el usuario marcó "Recordarme" la última vez, precarga su matrícula.
 onMounted(() => {
@@ -253,10 +232,8 @@ onMounted(() => {
 })
 
 async function handleLogin() {
-  errorMessage.value = ''
-
   if (!matricula.value || !password.value) {
-    errorMessage.value = 'Por favor, ingresa tu matrícula y contraseña.'
+    notify.warning('Por favor, ingresa tu matrícula y contraseña.')
     return
   }
 
@@ -270,8 +247,7 @@ async function handleLogin() {
     router.push(route.query.redirect || { name: 'Dashboard' })
   } catch (error) {
     // Formato estándar de error de la API: { error: true, message, details }
-    errorMessage.value =
-      error.response?.data?.message || 'Error al conectar con el servidor.'
+    notify.error(error.response?.data?.message || 'Error al conectar con el servidor.')
   } finally {
     isLoading.value = false
   }
