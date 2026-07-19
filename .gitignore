@@ -16,6 +16,7 @@ lerna-debug.log*
 
 # Variables de entorno (no subir secretos al repositorio)
 .env
+.env.*
 .env.local
 .env.*.local
 

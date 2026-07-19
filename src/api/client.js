@@ -1,16 +1,13 @@
 import axios from 'axios';
+import { getAccessToken, getRefreshToken, updateAccess, clearSession } from '../services/tokenStorage';
 
 /**
- * Si defines VITE_API_URL en .env.development / .env.production
- * (por ejemplo: VITE_API_URL=http://localhost:8000/api), se usa esa base.
- * Si no existe la variable, cae al valor de desarrollo por defecto.
+ * VITE_API_URL debe apuntar a la base SIN /v1 (client.js lo agrega):
+ *   .env.development -> VITE_API_URL=http://localhost:8000/api
+ *   .env.production  -> VITE_API_URL=/api
  */
 const ENV_BASE = import.meta.env.VITE_API_URL;
 const BASE_URL = ENV_BASE ? `${ENV_BASE}/v1` : 'http://localhost:8000/api/v1';
-
-const ACCESS_KEY = 'gea_access';
-const REFRESH_KEY = 'gea_refresh';
-const USER_KEY = 'gea_user';
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -18,7 +15,7 @@ const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem(ACCESS_KEY);
+  const token = getAccessToken();
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -26,12 +23,6 @@ apiClient.interceptors.request.use((config) => {
 
   return config;
 });
-
-function clearSession() {
-  localStorage.removeItem(ACCESS_KEY);
-  localStorage.removeItem(REFRESH_KEY);
-  localStorage.removeItem(USER_KEY);
-}
 
 // Evita disparar N refresh en paralelo si varias peticiones fallan a la vez con 401.
 let isRefreshing = false;
@@ -60,7 +51,7 @@ apiClient.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const refresh = localStorage.getItem(REFRESH_KEY);
+    const refresh = getRefreshToken();
 
     if (!refresh) {
       clearSession();
@@ -85,10 +76,7 @@ apiClient.interceptors.response.use(
     try {
       const { data } = await axios.post(`${BASE_URL}/auth/token/refresh/`, { refresh });
 
-      localStorage.setItem(ACCESS_KEY, data.access);
-      if (data.refresh) {
-        localStorage.setItem(REFRESH_KEY, data.refresh);
-      }
+      updateAccess({ access: data.access, refresh: data.refresh });
 
       resolvePending(data.access);
       config.headers.Authorization = `Bearer ${data.access}`;

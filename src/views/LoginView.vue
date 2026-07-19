@@ -1,6 +1,6 @@
 <template>
   <div class="login-main">
-    <!-- Layout móvil -->
+    <!-- MOBILE LAYOUT -->
     <div class="d-flex d-md-none flex-column login-mobile">
       <img :src="ellipseBlob2" class="mobile-bg-top" alt="" aria-hidden="true" />
       <img :src="ellipseBlob1" class="mobile-bg-bottom" alt="" aria-hidden="true" />
@@ -17,7 +17,18 @@
         <div class="mobile-form-container">
           <h2 class="mobile-form-title mb-5">Iniciar sesión</h2>
 
-          <v-form @submit.prevent="handleLogin">
+          <!-- Alerta de error para móvil -->
+          <v-alert
+            v-if="errorMessage"
+            type="error"
+            variant="tonal"
+            density="compact"
+            class="mb-4 text-left"
+          >
+            {{ errorMessage }}
+          </v-alert>
+
+          <v-form @submit.prevent="handleLogin" :disabled="isLoading">
             <label class="mobile-field-label">Matrícula</label>
             <v-text-field
               v-model="matricula"
@@ -26,6 +37,7 @@
               density="comfortable"
               class="mb-4"
               hide-details
+              :disabled="isLoading"
             />
 
             <label class="mobile-field-label">Contraseña</label>
@@ -37,6 +49,7 @@
               density="comfortable"
               class="mb-6"
               hide-details
+              :disabled="isLoading"
             >
               <template #append-inner>
                 <v-icon
@@ -55,6 +68,7 @@
               color="#1B5E20"
               class="text-none login-btn mb-6"
               elevation="0"
+              :loading="isLoading"
             >
               Iniciar sesión
             </v-btn>
@@ -69,7 +83,7 @@
       </div>
     </div>
 
-    <!-- Layout escritorio -->
+    <!-- DESKTOP LAYOUT -->
     <div class="d-none d-md-block login-desktop">
       <div class="desktop-left">
         <img :src="ellipseBgLarge" class="desktop-left-bg" alt="" aria-hidden="true" />
@@ -116,7 +130,18 @@
             Ingresa tus credenciales para ingresar a la plataforma
           </p>
 
-          <v-form @submit.prevent="handleLogin">
+          <!-- Alerta de error para escritorio -->
+          <v-alert
+            v-if="errorMessage"
+            type="error"
+            variant="tonal"
+            density="compact"
+            class="mb-4 text-left"
+          >
+            {{ errorMessage }}
+          </v-alert>
+
+          <v-form @submit.prevent="handleLogin" :disabled="isLoading">
             <label class="field-label">Matrícula</label>
             <v-text-field
               v-model="matricula"
@@ -126,6 +151,7 @@
               prepend-inner-icon="mdi-account-outline"
               class="mb-5"
               hide-details
+              :disabled="isLoading"
             />
 
             <label class="field-label">Contraseña</label>
@@ -138,6 +164,7 @@
               prepend-inner-icon="mdi-lock-outline"
               class="mb-3"
               hide-details
+              :disabled="isLoading"
             >
               <template #append-inner>
                 <v-icon
@@ -156,6 +183,7 @@
               color="#1B5E20"
               hide-details
               class="mb-5"
+              :disabled="isLoading"
             />
 
             <v-btn
@@ -166,6 +194,7 @@
               class="text-none login-btn mb-5"
               elevation="0"
               prepend-icon="mdi-login-variant"
+              :loading="isLoading"
             >
               Iniciar sesión
             </v-btn>
@@ -187,8 +216,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { loginWithCredentials, getRememberedMatricula } from '../services/authService'
 
+// Imágenes y SVGs
 import logoGea from '../assets/images/logo-gea.png'
 import leafIcon from '../assets/images/leaf-icon.svg'
 import plantIcon from '../assets/images/plant-icon.svg'
@@ -199,19 +231,50 @@ import ellipseBlob2 from '../assets/images/ellipse-blob-2.svg'
 import dotGrid from '../assets/images/dot-grid.svg'
 import treesImage from '../assets/images/trees-image.svg'
 
+const router = useRouter()
+const route = useRoute()
+
 const matricula = ref('')
 const password = ref('')
 const showPassword = ref(false)
 const rememberMe = ref(false)
 
-function handleLogin() {
-  // TODO: conectar con servicio de autenticación
-  console.log('Login:', {
-    matricula: matricula.value,
-    password: password.value,
-    rememberMe: rememberMe.value,
-  })
+// Estados de la interfaz
+const isLoading = ref(false)
+const errorMessage = ref('')
+
+// Si el usuario marcó "Recordarme" la última vez, precarga su matrícula.
+onMounted(() => {
+  const remembered = getRememberedMatricula()
+  if (remembered) {
+    matricula.value = remembered
+    rememberMe.value = true
+  }
+})
+
+async function handleLogin() {
+  errorMessage.value = ''
+
+  if (!matricula.value || !password.value) {
+    errorMessage.value = 'Por favor, ingresa tu matrícula y contraseña.'
+    return
+  }
+
+  isLoading.value = true
+
+  try {
+    await loginWithCredentials(matricula.value, password.value, rememberMe.value)
+
+    // Si el guard nos mandó al login desde otra ruta (?redirect=...),
+    // regresamos ahí; si no, al dashboard.
+    router.push(route.query.redirect || { name: 'Dashboard' })
+  } catch (error) {
+    // Formato estándar de error de la API: { error: true, message, details }
+    errorMessage.value =
+      error.response?.data?.message || 'Error al conectar con el servidor.'
+  } finally {
+    isLoading.value = false
+  }
 }
 </script>
-
 <style src="../assets/styles/login_view.css" scoped></style>

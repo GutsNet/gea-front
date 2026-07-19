@@ -1,28 +1,16 @@
 import apiClient from '../api/client';
+import {
+  setSession,
+  clearSession,
+  getStoredUser,
+  getAccessToken,
+  getRefreshToken,
+  updateAccess,
+} from './tokenStorage';
 
-const ACCESS_KEY = 'gea_access';
-const REFRESH_KEY = 'gea_refresh';
-const USER_KEY = 'gea_user';
-const REMEMBER_KEY = 'gea_remember_matricula';
+const REMEMBER_MATRICULA_KEY = 'gea_remember_matricula';
 
-export function getStoredUser() {
-  const raw = localStorage.getItem(USER_KEY);
-  if (!raw) return null;
-
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
-}
-
-export function getAccessToken() {
-  return localStorage.getItem(ACCESS_KEY);
-}
-
-export function getRefreshToken() {
-  return localStorage.getItem(REFRESH_KEY);
-}
+export { getStoredUser, getAccessToken };
 
 /**
  * true si hay un token de acceso y un usuario guardado en el navegador.
@@ -44,14 +32,17 @@ export function hasRole(...roles) {
 }
 
 export function getRememberedMatricula() {
-  return localStorage.getItem(REMEMBER_KEY) || '';
+  return localStorage.getItem(REMEMBER_MATRICULA_KEY) || '';
 }
 
 /**
  * Autentica contra POST /auth/login/ y persiste tokens + usuario.
  * @param {string} matricula
  * @param {string} password
- * @param {boolean} remember - si true, recuerda la matrícula (no la contraseña) para el próximo login.
+ * @param {boolean} remember - si true, guarda la sesión en localStorage
+ *   (persiste tras cerrar el navegador) y recuerda la matrícula para el
+ *   próximo login. Si false, la sesión vive en sessionStorage (se pierde
+ *   al cerrar la pestaña/navegador) y no se recuerda la matrícula.
  */
 export async function loginWithCredentials(matricula, password, remember = false) {
   const { data } = await apiClient.post('/auth/login/', {
@@ -59,14 +50,17 @@ export async function loginWithCredentials(matricula, password, remember = false
     password,
   });
 
-  localStorage.setItem(ACCESS_KEY, data.access);
-  localStorage.setItem(REFRESH_KEY, data.refresh);
-  localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+  setSession({
+    access: data.access,
+    refresh: data.refresh,
+    user: data.user,
+    remember,
+  });
 
   if (remember) {
-    localStorage.setItem(REMEMBER_KEY, matricula);
+    localStorage.setItem(REMEMBER_MATRICULA_KEY, matricula);
   } else {
-    localStorage.removeItem(REMEMBER_KEY);
+    localStorage.removeItem(REMEMBER_MATRICULA_KEY);
   }
 
   return data;
@@ -84,17 +78,11 @@ export async function refreshAccessToken() {
   }
 
   const { data } = await apiClient.post('/auth/token/refresh/', { refresh });
-
-  localStorage.setItem(ACCESS_KEY, data.access);
-  if (data.refresh) {
-    localStorage.setItem(REFRESH_KEY, data.refresh);
-  }
+  updateAccess({ access: data.access, refresh: data.refresh });
 
   return data.access;
 }
 
 export function logout() {
-  localStorage.removeItem(ACCESS_KEY);
-  localStorage.removeItem(REFRESH_KEY);
-  localStorage.removeItem(USER_KEY);
+  clearSession();
 }
