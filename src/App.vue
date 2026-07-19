@@ -1,7 +1,9 @@
 <template>
-  <component :is="layoutComponent">
-    <router-view />
-  </component>
+  <v-app>
+    <component :is="layoutComponent">
+      <router-view />
+    </component>
+  </v-app>
 </template>
 
 <script setup>
@@ -17,7 +19,6 @@ const layoutComponent = computed(() => {
   return route.meta.layout === 'auth' ? AuthLayout : DefaultLayout;
 });
 
-// Disparado por src/api/client.js cuando el refresh token también expiró/es inválido.
 function handleSessionExpired() {
   if (route.name !== 'Login') {
     router.replace({ name: 'Login', query: { expired: '1' } });
