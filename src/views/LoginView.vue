@@ -1,3 +1,9 @@
+<!--  
+G.E.A. Frontend 
+Autor: Gael Landa
+Proyecto: G.E.A. (Gestión Ecológica Arbórea)
+ -->
+
 <template>
   <div class="login-main">
     <!-- MOBILE LAYOUT -->
