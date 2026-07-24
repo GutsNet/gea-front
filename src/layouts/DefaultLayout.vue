@@ -1,6 +1,6 @@
 <template>
-  <div class="app-shell">
-    <!-- ================= MOBILE LAYOUT (topbar + drawer + bottom tabs) ================= -->
+  <div class="app-shell" :class="{ 'sidebar-collapsed': !desktopSidebarOpen }">
+    <!-- MOBILE LAYOUT (topbar + drawer + bottom tabs) -->
     <div class="mobile-layout">
       <header class="mobile-topbar">
         <button type="button" class="icon-btn" @click="drawerOpen = true" aria-label="Abrir menú">
@@ -74,7 +74,7 @@
       </nav>
     </div>
 
-    <!-- ================= DESKTOP LAYOUT (sidebar + topbar) ================= -->
+    <!-- DESKTOP LAYOUT (sidebar + topbar) -->
     <aside class="desktop-sidebar">
       <div class="desktop-brand">
         <img class="desktop-brand-logo" :src="logoGea" alt="G.E.A." />
@@ -96,13 +96,34 @@
 
     <header class="desktop-topbar">
       <div class="desktop-topbar-left">
+        <button
+          type="button"
+          class="icon-btn desktop-sidebar-toggle"
+          @click="desktopSidebarOpen = !desktopSidebarOpen"
+          aria-label="Mostrar u ocultar menú lateral"
+        >
+          <Transition name="icon-fade" mode="out-in">
+            <svg
+              :key="desktopSidebarOpen ? 'close' : 'open'"
+              viewBox="0 0 24 24"
+              class="icon"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              v-html="desktopSidebarOpen ? icons.panelLeftClose : icons.panelLeftOpen"
+            ></svg>
+          </Transition>
+        </button>
+
         <span class="desktop-page-icon">
           <svg viewBox="0 0 24 24" class="icon" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round" v-html="icons[currentIcon]"></svg>
         </span>
         <div>
           <h2 class="desktop-page-title">{{ currentTitle }}</h2>
-          <p v-if="currentSubtitle" class="desktop-page-subtitle">{{ currentSubtitle }}</p>
+          <p class="desktop-page-subtitle">{{ currentSubtitle }}</p>
         </div>
       </div>
 
@@ -135,7 +156,7 @@
       </div>
     </header>
 
-    <!-- ================= SHARED CONTENT AREA =================
+    <!--  SHARED CONTENT AREA 
          Single instance on purpose: duplicating <slot /> inside both the
          mobile and desktop blocks would mount the routed page TWICE at the
          same time (double API calls, timers, etc.), even if one copy is
@@ -157,6 +178,7 @@ const router = useRouter();
 const route = useRoute();
 const user = ref(null);
 const drawerOpen = ref(false);
+const desktopSidebarOpen = ref(true);
 const userMenuOpen = ref(false);
 const userMenuRef = ref(null);
 
@@ -182,32 +204,23 @@ function handleLogout() {
 
 // Menú completo (usado en el sidebar de escritorio y en el drawer móvil)
 const navItems = [
-  { to: '/dashboard', label: 'Dashboard', icon: 'home' },
-  { to: '/mapa', label: 'Mapa del Campus', icon: 'map' },
-  { to: '/reportes', label: 'Reportes', icon: 'fileText' },
-  { to: '/arboles', label: 'Árboles', icon: 'leaf' },
-  { to: '/estudiantes', label: 'Estudiantes', icon: 'users' },
-  { to: '/recoleccion', label: 'Recolección (kg)', icon: 'trash' },
-  { to: '/usuarios', label: 'Usuarios', icon: 'users' },
-  { to: '/configuracion', label: 'Configuración', icon: 'settings' },
+  { to: '/dashboard', label: 'Dashboard', icon: 'home', subtitle: 'Vista general del estado fitosanitario de la zona' },
+  { to: '/mapa', label: 'Mapa del Campus', icon: 'map', subtitle: 'Visualización y gestión del estado fitosanitario de la zona' },
+  { to: '/reportes', label: 'Reportes', icon: 'fileText', subtitle: 'Consulta y gestión de los reportes del estado de los árboles' },
+  { to: '/arboles', label: 'Árboles', icon: 'leaf', subtitle: 'Inventario y gestión de los árboles de la zona' },
+  { to: '/estudiantes', label: 'Estudiantes', icon: 'users', subtitle: 'Consulta y gestión de los estudiantes participantes' },
+  { to: '/recoleccion', label: 'Recolección (kg)', icon: 'trash', subtitle: 'Registro y gestión de la recolección de biomasa' },
+  { to: '/usuarios', label: 'Usuarios', icon: 'users', subtitle: 'Consulta y gestión de los usuarios del sistema' },
+  { to: '/configuracion', label: 'Configuración', icon: 'settings', subtitle: 'Configuración del sistema' },
 ];
 
-// Título / subtítulo / ícono mostrados en la barra superior (móvil y escritorio).
-// Se resuelven automáticamente a partir del navItem cuya ruta coincide con la
-// ruta activa, así el ícono del título SIEMPRE es el mismo que el del
-// sidebar/drawer para esa vista. Si quieres personalizar el título o subtítulo
-// de una ruta puntual, puedes seguir definiendo meta: { title, subtitle } y
-// tendrá prioridad; el ícono en cambio siempre sigue al navItem activo
-// (salvo que la ruta no tenga ningún navItem asociado, en cuyo caso usa
-// meta.icon o 'fileText' como último recurso).
 const currentNavItem = computed(() =>
   navItems.find((item) => route.path === item.to || route.path.startsWith(item.to + '/'))
 );
 const currentTitle = computed(() => route.meta?.title || currentNavItem.value?.label || route.name || 'GEA');
-const currentSubtitle = computed(() => route.meta?.subtitle || '');
+const currentSubtitle = computed(() => route.meta?.subtitle || currentNavItem.value?.subtitle);
 const currentIcon = computed(() => currentNavItem.value?.icon || route.meta?.icon || 'fileText');
 
-// Accesos rápidos de la barra inferior móvil (ajusta las rutas a las tuyas)
 const mobileTabs = [
   { to: '/mapa', label: 'Mapa', icon: 'map' },
   { to: '/dashboard', label: 'Resumen', icon: 'grid' },
@@ -236,6 +249,10 @@ const icons = {
   grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
   userCircle: '<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/>',
   chevronDown: '<polyline points="6 9 12 15 18 9"/>',
+  panelLeftClose:
+    '<rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><line x1="9" y1="3" x2="9" y2="21" /><path d="M17 16l-4-4 4-4" />',
+  panelLeftOpen:
+    '<rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><line x1="9" y1="3" x2="9" y2="21" /><path d="M13 8l4 4-4 4" />',
 };
 </script>
 
