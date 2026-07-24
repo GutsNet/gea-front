@@ -4,27 +4,19 @@
   font-family: 'Gabarito', sans-serif !important;
 }
 
-/* Layout switch (mobile / desktop) */
-
-@media (min-width: 960px) {
-  .login-mobile {
-    display: none !important;
-  }
-  .login-desktop {
-    display: block !important;
-  }
-}
-
-@media (max-width: 959px) {
-  .login-mobile {
-    display: flex !important;
-  }
-  .login-desktop {
-    display: none !important;
-  }
-}
-
+/* ---------- Shared (usado por ambos layouts) ---------- */
 .login-main {
+  --login-primary: #1b5e20;
+  --login-primary-light: #a5d6a7;
+  --login-link: #2e7d32;
+  --login-muted: #9e9e9e;
+  --login-text: #1a1a1a;
+  --login-subtext: #4a4a4a;
+  --login-subtitle: #757575;
+  --login-label: #333;
+  --login-mission-bg: #f4f7f5;
+  --login-mission-border: #037425;
+
   background: #ffffff;
   min-height: 100vh;
   width: 100%;
@@ -34,7 +26,7 @@
   display: block;
   font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: var(--login-label);
   margin-bottom: 8px;
 }
 
@@ -47,14 +39,14 @@
 }
 
 .forgot-link {
-  color: #2e7d32;
+  color: var(--login-link);
   font-weight: 500;
   font-size: 14px;
   cursor: pointer;
 }
 
 .version-text {
-  color: #9e9e9e;
+  color: var(--login-muted);
   font-size: 13px;
 }
 
@@ -62,270 +54,299 @@
   border-radius: 10px;
 }
 
-/* Mobile layout */
+/*
+   MOBILE LAYOUT — blobs de fondo + formulario centrado, visible hasta
+   959px.
+   */
+@media (max-width: 959px) {
+  .login-mobile {
+    display: flex !important;
+  }
+  .login-desktop {
+    display: none !important;
+  }
 
-.login-mobile {
-  min-height: 100vh;
-  position: relative;
-  background: #ffffff;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  .login-mobile {
+    min-height: 100vh;
+    position: relative;
+    background: #ffffff;
+    overflow: hidden;
+    flex-direction: column;
+  }
+
+  /* ---------- Fondo decorativo ---------- */
+  .mobile-bg-top {
+    position: absolute;
+    top: -100px;
+    left: -100px;
+    width: 550px;
+    height: auto;
+    z-index: 0;
+  }
+
+  .mobile-bg-bottom {
+    position: absolute;
+    bottom: -20px;
+    right: 0px;
+    width: 100%;
+    height: auto;
+    z-index: 0;
+  }
+
+  /* ---------- Contenedor de contenido ---------- */
+  .mobile-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 35px 24px 24px;
+  }
+
+  /* ---------- Encabezado (logo + tagline) ---------- */
+  .mobile-header {
+    margin-bottom: 20px;
+  }
+
+  .mobile-logo {
+    display: block;
+    width: 170px;
+    margin: 0 auto 10px;
+  }
+
+  .mobile-tagline {
+    color: var(--login-subtext);
+    font-size: 15px;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+
+  /* ---------- Formulario ---------- */
+  .mobile-form-container {
+    width: 100%;
+  }
+
+  .mobile-form-title {
+    font-size: 25px;
+    font-weight: 700;
+    color: var(--login-text);
+  }
+
+  .mobile-field-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--login-muted);
+    margin-bottom: 8px;
+  }
+
+  /* ---------- Pie (link + versión) ---------- */
+  .forgot-link-mobile {
+    color: var(--login-muted);
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: -100px;
+  }
+
+  .version-text-mobile {
+    color: var(--login-muted);
+    font-size: 12px;
+    font-weight: 600;
+    padding-bottom: 5px;
+  }
 }
 
-.mobile-bg-top {
-  position: absolute;
-  top: -100px;
-  left: -100px;
-  width: 550px;
-  height: auto;
-  z-index: 0;
-}
+/*
+   DESKTOP LAYOUT — hero partido (izquierda) + tarjeta de formulario
+   flotante (derecha), visible desde 960px.
+   */
+@media (min-width: 960px) {
+  .login-mobile {
+    display: none !important;
+  }
+  .login-desktop {
+    display: block !important;
+  }
 
-.mobile-bg-bottom {
-  position: absolute;
-  bottom: -20px;
-  right: 0px;
-  width: 100%;
-  height: auto;
-  z-index: 0;
-}
+  .login-desktop {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+  }
 
-.mobile-content {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  padding: 35px 24px 24px;
-}
+  /* ---------- Panel izquierdo (hero) ---------- */
+  .desktop-left {
+    width: 100%;
+    min-height: 100vh;
+    background: #ffffff;
+    position: relative;
+    padding: 56px;
+    overflow: hidden;
+  }
 
-.mobile-header {
-  margin-bottom: 20px;
-}
+  .desktop-left-bg {
+    position: absolute;
+    top: -450px;
+    left: 0;
+    width: 1100px;
+    height: auto;
+    z-index: 0;
+    opacity: 0.85;
+  }
 
-.mobile-logo {
-  display: block;
-  width: 170px;
-  margin: 0 auto 10px;
-}
+  .desktop-left-rect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: auto;
+    z-index: 0;
+    opacity: 0.7;
+  }
 
-.mobile-tagline {
-  color: #4a4a4a;
-  font-size: 15px;
-  line-height: 1.5;
-  font-weight: 400;
-}
+  .desktop-left-content {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+    padding-top: 5px;
+  }
 
-.mobile-form-container {
-  width: 100%;
-}
+  .desktop-logo {
+    display: block;
+    width: 220px;
+    margin-left: 250px;
+    margin-bottom: 20px;
+  }
 
-.mobile-form-title {
-  font-size: 25px;
-  font-weight: 700;
-  color: #1a1a1a;
-}
+  .desktop-divider {
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--login-primary), var(--login-primary-light));
+    border-radius: 2px;
+    margin-left: 250px;
+    margin-bottom: 10px !important;
+  }
 
-.mobile-field-label {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  color: #9e9e9e;
-  margin-bottom: 8px;
-}
+  .desktop-tagline {
+    color: var(--login-subtext);
+    font-size: 16px;
+    margin-left: 250px;
+    line-height: 1.6;
+  }
 
-.forgot-link-mobile {
-  color: #9e9e9e;
-  font-weight: 600;
-  font-size: 16px;
-  cursor: pointer;
-  margin-bottom: -100px;
-}
+  .desktop-tree-wrap {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 46%;
+    z-index: 0;
+    overflow: visible;
+  }
 
-.version-text-mobile {
-  color: #9e9e9e;
-  font-size: 12px;
-  font-weight: 600;
-  padding-bottom: 5px;
-}
+  .desktop-tree-image {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    object-fit: contain;
+    object-position: bottom left;
+  }
 
-/* Desktop layout */
+  .desktop-dot-grid {
+    display: block;
+    margin-top: 30px;
+    height: auto;
+    width: 70px;
+    opacity: 0.9;
+  }
 
-.login-desktop {
-  position: relative;
-  min-height: 100vh;
-  width: 100%;
-}
+  /* ---------- Tarjeta "Nuestra misión" ---------- */
+  .mission-card {
+    position: absolute;
+    bottom: 50px;
+    left: 140px;
+    max-width: 800px;
+    background: var(--login-mission-bg);
+    border-radius: 16px;
+    padding: 2px 35px;
+    z-index: 3;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
 
-.desktop-left {
-  width: 100%;
-  min-height: 100vh;
-  background: #ffffff;
-  position: relative;
-  padding: 56px;
-  overflow: hidden;
-}
+  .mission-leaf-icon {
+    width: 30px;
+    height: 30px;
+    display: block;
+    margin: auto;
+    object-fit: contain;
+  }
 
-.desktop-left-bg {
-  position: absolute;
-  top: -450px;
-  left: 0;
-  width: 1100px;
-  height: auto;
-  z-index: 0;
-  opacity: 0.85;
-}
+  .mission-title {
+    font-weight: 600;
+    font-size: 20px;
+    color: var(--login-text);
+    line-height: 1.5;
+  }
 
-.desktop-left-rect {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 300px;
-  height: auto;
-  z-index: 0;
-  opacity: 0.7;
-}
+  .mission-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--login-subtext);
+    line-height: 1.5;
+    margin-top: 4px;
+  }
 
-.desktop-left-content {
-  position: relative;
-  z-index: 2;
-  max-width: 600px;
-  padding-top: 5px;
-}
+  /* ---------- Tarjeta de formulario (derecha) ---------- */
+  .desktop-right {
+    position: absolute;
+    top: 50%;
+    right: 9%;
+    transform: translateY(-50%);
+    width: 100%;
+    max-width: 630px;
+    z-index: 10;
+  }
 
-.desktop-logo {
-  display: block;
-  width: 220px;
-  margin-left: 250px;
-  margin-bottom: 20px;
-}
+  .desktop-form-card {
+    width: 100%;
+    padding: 60px 50px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+  }
 
-.desktop-divider {
-  width: 80px;
-  height: 3px;
-  background: linear-gradient(90deg, #1b5e20, #a5d6a7);
-  border-radius: 2px;
-  margin-left: 250px;
-  margin-bottom: 10px !important;
-}
+  .desktop-form-title {
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--login-text);
+    letter-spacing: -0.5px;
+  }
 
-.desktop-tagline {
-  color: #4a4a4a;
-  font-size: 16px;
-  margin-left: 250px;
-  line-height: 1.6;
-}
+  .desktop-form-subtitle {
+    color: var(--login-subtitle);
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 35px !important;
+  }
 
-.desktop-tree-wrap {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 46%;
-  z-index: 0;
-  overflow: visible;
-}
+  .desktop-form-card .field-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--login-text);
+    margin-bottom: 10px;
+  }
 
-.desktop-tree-image {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  object-fit: contain;
-  object-position: bottom left;
-}
+  .desktop-form-card .login-btn {
+    border-radius: 8px;
+    height: 56px !important;
+    font-size: 17px;
+  }
 
-.desktop-dot-grid {
-  display: block;
-  margin-top: 30px;
-  height: auto;
-  width: 70px;
-  opacity: 0.9;
-}
-
-.mission-card {
-  position: absolute;
-  bottom: 50px;
-  left: 140px;
-  max-width: 800px;
-  background: #F4F7F5;
-  border-radius: 16px;
-  padding: 2px 35px;
-  z-index: 3;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.mission-leaf-icon {
-  width: 30px;
-  height: 30px;
-  display: block;
-  margin: auto;
-  object-fit: contain;
-}
-
-.mission-title {
-  font-weight: 600;
-  font-size: 20px;
-  color: #1a1a1a;
-  line-height: 1.5;
-}
-
-.mission-text {
-  font-size: 16px;
-  font-weight: 500;
-  color: #4a4a4a;
-  line-height: 1.5;
-  margin-top: 4px;
-}
-
-.desktop-right {
-  position: absolute;
-  top: 50%;
-  right: 9%;
-  transform: translateY(-50%);
-  width: 100%;
-  max-width: 630px;
-  z-index: 10;
-}
-
-.desktop-form-card {
-  width: 100%;
-  padding: 60px 50px;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-}
-
-.desktop-form-title {
-  font-size: 38px;
-  font-weight: 700;
-  color: #1a1a1a;
-  letter-spacing: -0.5px;
-}
-
-.desktop-form-subtitle {
-  color: #757575;
-  font-size: 18px;
-  font-weight: 500;
-  margin-bottom: 35px !important;
-}
-
-.desktop-form-card .field-label {
-  font-size: 15px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 10px;
-}
-
-.desktop-form-card .login-btn {
-  border-radius: 8px;
-  height: 56px !important;
-  font-size: 17px;
-}
-
-.desktop-form-card :deep(.v-field) {
-  border-radius: 8px;
+  .desktop-form-card :deep(.v-field) {
+    border-radius: 8px;
+  }
 }

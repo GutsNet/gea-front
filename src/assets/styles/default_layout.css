@@ -1,0 +1,491 @@
+@import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@400;500;600;700;800;900&display=swap');
+
+* {
+  font-family: 'Gabarito', sans-serif !important;
+}
+
+/* ---------- Shared (usado por ambos layouts) ---------- */
+.app-shell {
+  --gea-primary: #2e8b3d;
+  --gea-primary-dark: #1f5c2a;
+  --gea-active-bg: #e3f4e6;
+  --gea-active-fg: #1f7a3d;
+  --gea-text: #1c1c1c;
+  --gea-muted: #6b6b6b;
+  --mobile-topbar-h: 56px;
+  --mobile-tabbar-h: 64px;
+  --desktop-sidebar-w: 240px;
+
+  display: grid;
+  grid-template-columns: var(--desktop-sidebar-w) 1fr;
+  grid-template-rows: auto 1fr; /* <--- AGREGA ESTA LÍNEA */
+  min-height: 100vh;
+  background: #fafafa;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  padding: 0.5rem;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.icon-btn .icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Oculto por defecto; solo se muestra dentro del @media móvil de abajo. */
+.mobile-layout {
+  display: none;
+}
+
+/* Área de contenido, una sola instancia compartida por ambos layouts;
+   el padding se ajusta dentro del @media móvil para dejar espacio a la
+   topbar/tabbar fijas. */
+.content {
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+/* 
+   DESKTOP LAYOUT — sidebar + topbar, visible desde 881px en adelante.
+    */
+@media (min-width: 881px) {
+  .desktop-sidebar {
+    grid-row: 1 / span 2;
+    background: #ffffff;
+    color: var(--gea-text);
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #eee;
+  }
+
+  .desktop-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.15rem;
+    padding-bottom: 1rem;
+  }
+
+  .desktop-brand-logo {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .desktop-nav {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .desktop-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--gea-text);
+    text-decoration: none;
+    padding: 0.85rem 0.85rem;
+    border-radius: 14px;
+    /* font-weight: 600; */
+    font-size: 1.1rem;
+  }
+
+  .desktop-nav-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .desktop-nav-item:hover {
+    background: #f3f3f3;
+  }
+
+  .desktop-nav-item.router-link-active {
+    background: var(--gea-active-bg);
+    color: var(--gea-active-fg);
+  }
+
+  /* ---------- Desktop top bar ---------- */
+  .desktop-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.7rem 1.7rem 1.25rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  .desktop-topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .desktop-page-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    color: var(--gea-primary);
+    border: 2px solid var(--gea-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-sizing: border-box;
+  }
+
+  .desktop-page-icon .icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .desktop-page-title {
+    margin: 0;
+    font-size: 1.4rem;
+    color: var(--gea-text);
+  }
+
+  .desktop-page-subtitle {
+    margin: 0.15rem 0 0;
+    font-size: 0.85rem;
+    color: var(--gea-muted);
+  }
+
+  .desktop-topbar-right {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .desktop-user-card {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0.4rem;
+    border-radius: 999px;
+  }
+
+  .desktop-user-card:hover {
+    background: #f3f3f3;
+  }
+
+  .desktop-user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gea-primary);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .desktop-user-avatar .icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .desktop-user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.2;
+  }
+
+  .desktop-user-matricula {
+    font-size: 0.9rem;
+  }
+
+  .desktop-user-rol {
+    font-size: 0.75rem;
+  }
+
+  .desktop-chevron {
+    width: 18px;
+    height: 18px;
+    color: var(--gea-muted);
+    transition: transform 0.15s ease;
+  }
+
+  .desktop-chevron-open {
+    transform: rotate(180deg);
+  }
+
+  .desktop-user-dropdown {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    right: 0;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    min-width: 170px;
+    padding: 0.4rem;
+    z-index: 20;
+  }
+
+  .desktop-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--gea-text);
+    padding: 0.55rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .desktop-dropdown-item:hover {
+    background: #f3f3f3;
+  }
+
+  .desktop-dropdown-item .icon {
+    width: 18px;
+    height: 18px;
+    color: var(--gea-muted);
+  }
+}
+
+/* 
+   MOBILE LAYOUT — topbar + drawer + bottom tabs, visible hasta 880px.
+   Es el único lugar donde móvil y escritorio "hablan" entre sí: bajo el
+   breakpoint se oculta todo el bloque desktop y se muestra el mobile.
+    */
+@media (max-width: 880px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .desktop-sidebar,
+  .desktop-topbar {
+    display: none;
+  }
+
+  .mobile-layout {
+    display: block;
+  }
+
+  .content {
+    padding: calc(var(--mobile-topbar-h) + 1.5rem) 1rem calc(var(--mobile-tabbar-h) + 1.5rem);
+  }
+
+  /* ---------- Mobile top bar ---------- */
+  .mobile-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--mobile-topbar-h);
+    background: var(--gea-primary);
+    color: #fff;
+    padding: 0 0.5rem;
+    z-index: 30;
+  }
+
+  .mobile-title {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .mobile-topbar-spacer {
+    width: 40px;
+  }
+
+  /* ---------- Mobile drawer overlay ---------- */
+  .mobile-drawer-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 40;
+  }
+
+  /* ---------- Mobile drawer (off-canvas) ---------- */
+  .mobile-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 260px;
+    background: #ffffff;
+    color: var(--gea-text);
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 50;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .mobile-drawer.mobile-drawer-open {
+    transform: translateX(0);
+  }
+
+  .mobile-drawer-close {
+    display: inline-flex;
+    align-self: flex-end;
+    color: var(--gea-muted);
+  }
+
+  .mobile-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.15rem;
+    padding-bottom: 1rem;
+  }
+
+  .mobile-brand-logo {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .mobile-nav {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .mobile-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--gea-text);
+    text-decoration: none;
+    padding: 0.9rem 0.9rem;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .mobile-nav-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .mobile-nav-item:hover {
+    background: #f3f3f3;
+  }
+
+  .mobile-nav-item.router-link-active {
+    background: var(--gea-active-bg);
+    color: var(--gea-active-fg);
+  }
+
+  /* Account card + logout, at the bottom of the drawer */
+  .mobile-drawer-footer {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0 0.65rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+  }
+
+  .mobile-user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--gea-primary);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .mobile-user-avatar .icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .mobile-user-matricula {
+    margin: 0;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .mobile-user-rol {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--gea-muted);
+  }
+
+  .mobile-logout-btn {
+    grid-column: 1 / -1;
+    margin-top: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    border: none;
+    color: var(--gea-muted);
+    padding: 0.5rem 0.25rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+
+  .mobile-logout-btn:hover {
+    color: var(--gea-text);
+  }
+
+  /* ---------- Mobile bottom tab bar ---------- */
+  .mobile-bottom-tabbar {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--mobile-tabbar-h);
+    background: #fff;
+    border-top: 1px solid #eee;
+    z-index: 30;
+  }
+
+  .mobile-tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    text-decoration: none;
+    color: var(--gea-muted);
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+
+  .mobile-tab-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .mobile-tab-item.router-link-active {
+    color: var(--gea-primary);
+  }
+}
