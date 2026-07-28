@@ -231,26 +231,32 @@ onMounted(() => {
   }
 })
 
-async function handleLogin() {
-  if (!matricula.value || !password.value) {
-    notify.warning('Por favor, ingresa tu matrícula y contraseña.')
-    return
-  }
+//async function handleLogin() {
+//  if (!matricula.value || !password.value) {
+//    notify.warning('Por favor, ingresa tu matrícula y contraseña.')
+//    return
+//  }
 
-  isLoading.value = true
+//  isLoading.value = true
 
-  try {
-    await loginWithCredentials(matricula.value, password.value, rememberMe.value)
+//  try {
+//    await loginWithCredentials(matricula.value, password.value, rememberMe.value)
 
     // Si el guard nos mandó al login desde otra ruta (?redirect=...),
     // regresamos ahí; si no, al dashboard.
-    router.push(route.query.redirect || { name: 'Dashboard' })
-  } catch (error) {
+//    router.push(route.query.redirect || { name: 'Dashboard' })
+//  } catch (error) {
     // Formato estándar de error de la API: { error: true, message, details }
-    notify.error(error.response?.data?.message || 'Error al conectar con el servidor.')
-  } finally {
-    isLoading.value = false
-  }
+//    notify.error(error.response?.data?.message || 'Error al conectar con el servidor.')
+//  } finally {
+//    isLoading.value = false
+//  }
+//}
+
+function handleLogin() {
+
+  router.push('/dashboard')
+
 }
 </script>
 <style src="../assets/styles/login_view.css" scoped></style>

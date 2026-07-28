@@ -5,6 +5,7 @@ import ArbolesView from '../views/ArbolesView.vue';
 import ReportesView from '../views/ReportesView.vue';
 import MapaView from '../views/MapaView.vue';
 import { authGuard } from './guards';
+import EstudiantesView from "../views/EstudiantesView.vue";
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -38,6 +39,12 @@ const routes = [
     component: MapaView,
     meta: { layout: 'default', requiresAuth: true },
   },
+  {
+    path: '/estudiantes',
+    name: 'Estudiantes',
+    component: EstudiantesView,
+    meta: { layout: 'default', requiresAuth: true },
+  }
 ];
 
 const router = createRouter({
