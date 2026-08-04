@@ -102,7 +102,8 @@
           @click="desktopSidebarOpen = !desktopSidebarOpen"
           aria-label="Mostrar u ocultar menú lateral"
         >
-          <Transition name="icon-fade" mode="out-in">
+          <!-- Transición renombrada y sin out-in -->
+          <Transition name="icon-mirror">
             <svg
               :key="desktopSidebarOpen ? 'close' : 'open'"
               viewBox="0 0 24 24"
@@ -147,6 +148,12 @@
         </button>
 
         <div v-if="userMenuOpen" class="desktop-user-dropdown">
+          <router-link to="/cuenta" class="desktop-dropdown-item" @click="userMenuOpen = false">
+            <svg viewBox="0 0 24 24" class="icon" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" v-html="icons.userCircle"></svg>
+            <span>Cuenta</span>
+          </router-link>
+          <div class="desktop-dropdown-divider"></div>
           <button type="button" class="desktop-dropdown-item" @click="handleLogout">
             <svg viewBox="0 0 24 24" class="icon" fill="none" stroke="currentColor" stroke-width="2"
               stroke-linecap="round" stroke-linejoin="round" v-html="icons.logOut"></svg>

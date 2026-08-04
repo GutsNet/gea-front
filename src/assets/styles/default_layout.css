@@ -121,8 +121,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 1.7rem 1.7rem 1.25rem;
-    margin-bottom: 1.25rem;
+    padding: 1.25rem 1.7rem 1.25rem;
     border-bottom: 1px solid #e0e0e0; 
   }
 
@@ -133,39 +132,49 @@
   }
 
 .desktop-sidebar-toggle {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  color: var(--gea-text);
-  
-  padding: 0.5rem 2rem 0.5rem 0.5rem !important; 
-  
-  border-right: 1px solid #e0e0e0 !important; 
-  border-radius: 0 !important;
-  
-  width: auto !important;
-  height: auto !important;
-  margin: 0 !important;
-}
-
-.desktop-sidebar-toggle .icon {
-  width: 32px !important;
-  height: 32px !important;
-  margin: 0 !important;
-  display: block !important;
-}
-
-  .icon-fade-enter-active,
-  .icon-fade-leave-active {
-    transition: opacity 0.15s ease, transform 0.15s ease;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: var(--gea-text);
+    
+    padding: 0.5rem 2rem 0.5rem 0.5rem !important; 
+    
+    border-right: 1px solid #e0e0e0 !important; 
+    border-radius: 0 !important;
+    
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    position: relative; /* ¡Nuevo para contener el ícono absoluto! */
   }
 
-  .icon-fade-enter-from,
-  .icon-fade-leave-to {
+  .desktop-sidebar-toggle .icon {
+    width: 32px !important;
+    height: 32px !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+
+  /* --- Nuevas clases de animación de espejo --- */
+  .icon-mirror-enter-active,
+  .icon-mirror-leave-active {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .icon-mirror-leave-active {
+    position: absolute;
+  }
+
+  .icon-mirror-enter-from {
+    transform: rotateY(-90deg);
     opacity: 0;
-    transform: scale(0.7) rotate(-45deg);
   }
 
+  .icon-mirror-leave-to {
+    transform: rotateY(90deg);
+    opacity: 0;
+  }
+  
   /* Sidebar colapsado (botón hamburguesa del topbar): se encoge a 0 con
      transición en vez de desaparecer de golpe con display:none. */
   .app-shell {
@@ -306,6 +315,14 @@
     font-size: 0.88rem;
     cursor: pointer;
     text-align: left;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+
+  .desktop-dropdown-divider {
+    height: 1px;
+    background: #eee;
+    margin: 0.3rem 0.2rem;
   }
 
   .desktop-dropdown-item:hover {
