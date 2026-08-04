@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import LoginView from '../views/LoginView.vue';
-import DashboardView from '../views/DashboardView.vue';
-import ArbolesView from '../views/ArbolesView.vue';
-import ReportesView from '../views/ReportesView.vue';
-import MapaView from '../views/MapaView.vue';
+import LoginView from '@src/views/login/LoginView.vue';
+import DashboardView from '@src/views/DashboardView.vue';
+import ArbolesView from '@src/views/ArbolesView.vue';
+import ReportesView from '@src/views/ReportesView.vue';
+import MapaView from '@src/views/MapaView.vue';
+import ConfiguracionView from '@src/views/ConfiguracionView.vue';
+import CuentaView from '@src/views/CuentaView.vue';
 import { authGuard } from './guards';
 
 const routes = [
@@ -36,6 +38,18 @@ const routes = [
     path: '/mapa',
     name: 'Mapa',
     component: MapaView,
+    meta: { layout: 'default', requiresAuth: true },
+  },
+  {
+    path: '/configuracion',
+    name: 'Configuracion',
+    component: ConfiguracionView,
+    meta: { layout: 'default', requiresAuth: true, roles: ['root'] },
+  },
+  {
+    path: '/cuenta',
+    name: 'Cuenta',
+    component: CuentaView,
     meta: { layout: 'default', requiresAuth: true },
   },
 ];
