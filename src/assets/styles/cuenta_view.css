@@ -1,0 +1,449 @@
+.cuenta-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  min-height: 100%;
+}
+
+/* La vista de escritorio y la de móvil son dos bloques de markup
+   independientes (mismo patrón que .desktop-topbar / .mobile-layout en
+   DefaultLayout.vue), alternados por CSS según el breakpoint de 880px
+   ya usado en toda la app. */
+.cuenta-mobile-only {
+  display: none;
+}
+
+.cuenta-desktop-only {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.cuenta-loading {
+  color: var(--gea-muted, #6b6b6b);
+  padding: 2rem 0;
+}
+
+.cuenta-card {
+  background: #ffffff;
+  border: 1px solid #e6e6e6;
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+}
+
+.icon-sm {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* ---------- Perfil ---------- */
+.cuenta-profile {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.cuenta-profile-main {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex: 1 1 340px;
+  min-width: 280px;
+}
+
+.cuenta-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: #e3f4e6;
+  color: var(--gea-primary, #2e8b3d);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cuenta-avatar .icon {
+  width: 44px;
+  height: 44px;
+}
+
+.cuenta-name {
+  margin: 0 0 0.35rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1c1c1c;
+}
+
+.cuenta-role-badge {
+  display: inline-block;
+  background: #e3f4e6;
+  color: #1f7a3d;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  margin-bottom: 0.6rem;
+}
+
+.cuenta-meta-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.cuenta-profile-side {
+  display: flex;
+  align-items: center;
+  flex: 2 1 460px;
+  gap: 2.5rem;
+  padding-left: 2rem;
+  border-left: 1px solid #eee;
+}
+
+.cuenta-side-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.cuenta-side-divider {
+  width: 1px;
+  align-self: stretch;
+  background: #eee;
+}
+
+.cuenta-side-icon {
+  color: var(--gea-primary, #2e8b3d);
+  flex-shrink: 0;
+}
+
+.cuenta-side-label {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #6b6b6b;
+}
+
+.cuenta-side-value {
+  margin: 0.1rem 0 0;
+  font-weight: 700;
+  color: #1c1c1c;
+}
+
+/* ---------- Estadísticas ---------- */
+.cuenta-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.cuenta-stat {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.cuenta-stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cuenta-stat-icon-green {
+  background: #e3f4e6;
+  color: #1f7a3d;
+}
+
+.cuenta-stat-label {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.cuenta-stat-value {
+  margin: 0.2rem 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #1f7a3d;
+}
+
+.cuenta-stat-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #8a8a8a;
+}
+
+/* ---------- Actividad reciente (ahora a todo el ancho) ---------- */
+.cuenta-activity {
+  width: 100%;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.cuenta-activity-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+  font-size: 1.05rem;
+  color: #1c1c1c;
+}
+
+.cuenta-activity-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8a8a8a;
+  font-size: 0.9rem;
+}
+
+.cuenta-activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+}
+
+.cuenta-activity-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.cuenta-activity-item:last-child {
+  border-bottom: none;
+}
+
+.cuenta-activity-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cuenta-activity-icon-green {
+  background: #e3f4e6;
+  color: #1f7a3d;
+}
+
+.cuenta-activity-icon-red {
+  background: #fdecea;
+  color: #b42318;
+}
+
+.cuenta-activity-icon-blue {
+  background: #e6f0fb;
+  color: #1a5fb4;
+}
+
+.cuenta-activity-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.cuenta-activity-label {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: #1c1c1c;
+}
+
+.cuenta-activity-detail {
+  margin: 0.1rem 0 0;
+  font-size: 0.82rem;
+  color: #8a8a8a;
+}
+
+.cuenta-activity-time {
+  font-size: 0.8rem;
+  color: #8a8a8a;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ---------- Cerrar sesión ---------- */
+.cuenta-logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.9rem;
+  background: #fdecea;
+  color: #b42318;
+  border: 1px solid #f3c6c1;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.cuenta-logout-btn:hover {
+  background: #fbdedb;
+}
+
+.cuenta-footer {
+  text-align: center;
+  color: #a0a0a0;
+  font-size: 0.8rem;
+  margin: 0.5rem 0 1rem;
+}
+
+/* ---------- Vista móvil ---------- */
+.cuenta-role-text {
+  margin: 0 0 0.35rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #1f7a3d;
+}
+
+.cuenta-meta-line-plain {
+  margin: 0.15rem 0 0;
+  font-size: 0.88rem;
+  color: #555;
+}
+
+.cuenta-mobile-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.cuenta-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1c1c1c;
+}
+
+.cuenta-section-title .icon {
+  color: var(--gea-primary, #2e8b3d);
+}
+
+.cuenta-mobile-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.cuenta-mobile-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.cuenta-mobile-row:first-child {
+  padding-top: 0.25rem;
+}
+
+.cuenta-mobile-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0.25rem;
+}
+
+.cuenta-mobile-row-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #e3f4e6;
+  color: #1f7a3d;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cuenta-mobile-row-label {
+  margin: 0 0 0.15rem;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.cuenta-mobile-row-value {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #1f7a3d;
+}
+
+.cuenta-mobile-row-value--info {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #1c1c1c;
+}
+
+.cuenta-footer-brand {
+  display: inline;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 880px) {
+  .cuenta-desktop-only {
+    display: none;
+  }
+
+  .cuenta-mobile-only {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .cuenta-footer-brand {
+    display: none;
+  }
+
+  .cuenta-profile {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cuenta-profile-side {
+    border-left: none;
+    padding-left: 0;
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+    width: 100%;
+  }
+
+  .cuenta-side-divider {
+    display: none;
+  }
+
+  .cuenta-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .cuenta-activity-time {
+    align-self: flex-start;
+  }
+}
