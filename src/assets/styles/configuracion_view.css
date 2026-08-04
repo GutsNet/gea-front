@@ -1,0 +1,460 @@
+/*
+  Colores de marca (--gea-primary, --gea-border, --gea-muted...) y el
+  breakpoint estándar (960px) vienen de theme.css. Esta vista solo agrega
+  las medidas/estilos que le son propios.
+*/
+.config-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Layout: sub-nav + panel (solo desktop; en móvil se usa .config-mobile) */
+.config-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* Sub-navegación */
+.config-nav {
+  background: var(--gea-surface);
+  border: 1px solid var(--gea-border);
+  border-radius: 14px;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.config-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem 0.85rem;
+  color: #3a3a3a;
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.config-nav-item:hover {
+  background: #f2f6f3;
+}
+
+.config-nav-item-active {
+  background: var(--gea-active-bg);
+  color: var(--gea-active-fg);
+  font-weight: 600;
+}
+
+/* Panel */
+.config-panel {
+  background: var(--gea-surface);
+  border: 1px solid var(--gea-border);
+  border-radius: 14px;
+  padding: 1.75rem 2rem 2rem;
+}
+
+.config-panel-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--gea-text);
+}
+
+.config-panel-subtitle {
+  margin: 0.25rem 0 1.25rem;
+  padding-bottom: 1.15rem;
+  border-bottom: 1px solid var(--gea-border);
+  color: var(--gea-muted);
+  font-size: 0.9rem;
+}
+
+.config-section {
+  padding: 1.35rem 0;
+  border-bottom: 1px solid var(--gea-border);
+}
+
+.config-section:last-of-type {
+  border-bottom: none;
+}
+
+.config-section h4 {
+  margin: 0 0 0.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--gea-text);
+}
+
+.config-desc {
+  margin: 0 0 0.9rem;
+  color: var(--gea-muted);
+  font-size: 0.85rem;
+}
+
+/* Tema */
+.theme-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.theme-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem 1rem 1.1rem;
+  background: var(--gea-surface);
+  border: 1.5px solid var(--gea-border);
+  border-radius: 12px;
+  color: #3a3a3a;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.theme-card:hover {
+  border-color: #cfd9d3;
+}
+
+.theme-card-active {
+  border-color: var(--gea-primary);
+  background: #f4faf5;
+  color: var(--gea-text);
+}
+
+.theme-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.theme-radio {
+  position: absolute;
+  left: 1rem;
+  bottom: 0.9rem;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid #d3d9d5;
+  background: #fff;
+}
+
+.theme-radio-checked {
+  border-color: var(--gea-primary);
+  background: var(--gea-primary);
+  box-shadow: inset 0 0 0 2.5px #fff;
+}
+
+/* Color principal */
+.color-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.color-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  border: 1px solid var(--gea-border);
+  border-radius: 10px;
+  padding: 0.35rem 0.6rem;
+}
+
+.color-swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.color-text-field {
+  width: 150px;
+}
+
+.color-text-field :deep(.v-field__input) {
+  min-height: 34px;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: 0.9rem;
+}
+
+.color-presets {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.preset-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Logo del sistema */
+.logo-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.logo-preview {
+  width: 170px;
+  border: 1px solid var(--gea-border);
+  border-radius: 12px;
+  padding: 1.25rem 1rem;
+  background: #fafcfb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.15rem;
+}
+
+.logo-preview-img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  margin-bottom: 0.4rem;
+}
+
+.logo-preview-name {
+  font-weight: 700;
+  color: var(--gea-primary);
+}
+
+.logo-preview-sub {
+  font-size: 0.7rem;
+  color: var(--gea-muted);
+}
+
+.logo-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding-top: 0.25rem;
+}
+
+.logo-hint {
+  margin: 0;
+  color: var(--gea-muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.hidden-input {
+  display: none;
+}
+
+/* Toggle: mostrar animaciones */
+.config-section-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* Footer */
+.config-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.9rem;
+  padding-top: 1.5rem;
+}
+
+.config-saved-msg {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--gea-primary);
+  font-size: 0.85rem;
+}
+
+/* MOBILE */
+.config-mobile {
+  gap: 1rem;
+}
+
+.mobile-config-tabs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: none;
+}
+
+.mobile-config-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-config-tab {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--gea-surface);
+  border: 1px solid var(--gea-border);
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  color: var(--gea-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.mobile-config-tab-active {
+  background: var(--gea-active-bg);
+  border-color: var(--gea-primary);
+  color: var(--gea-active-fg);
+  font-weight: 700;
+}
+
+.mobile-config-panel {
+  background: var(--gea-surface);
+  border: 1px solid var(--gea-border);
+  border-radius: var(--gea-radius);
+  padding: 1.25rem 1rem 1.5rem;
+}
+
+.mobile-config-panel-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--gea-text);
+}
+
+.mobile-config-panel-subtitle {
+  margin: 0.2rem 0 1.1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--gea-border);
+  color: var(--gea-muted);
+  font-size: 0.85rem;
+}
+
+.mobile-config-section {
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--gea-border);
+}
+
+.mobile-config-section:last-of-type {
+  border-bottom: none;
+}
+
+.mobile-config-section h4 {
+  margin: 0 0 0.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gea-text);
+}
+
+/* Tema: una tarjeta por fila en vez de grid de 3 columnas */
+.mobile-theme-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.mobile-theme-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  background: var(--gea-surface);
+  border: 1.5px solid var(--gea-border);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  color: #3a3a3a;
+  text-align: left;
+}
+
+.mobile-theme-card-active {
+  border-color: var(--gea-primary);
+  background: #f4faf5;
+  color: var(--gea-text);
+}
+
+.mobile-theme-radio {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #d3d9d5;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.mobile-theme-radio-checked {
+  border-color: var(--gea-primary);
+  background: var(--gea-primary);
+  box-shadow: inset 0 0 0 2.5px #fff;
+}
+
+.mobile-theme-label {
+  flex: 1;
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+/* Color principal: swatch + input a lo ancho, presets debajo */
+.mobile-color-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  border: 1px solid var(--gea-border);
+  border-radius: 10px;
+  padding: 0.35rem 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.mobile-color-presets {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+/* Logo del sistema: preview + botón apilados */
+.mobile-logo-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Toggle: mostrar animaciones */
+.mobile-config-section-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* Guardar cambios: fijo al fondo del panel, a lo ancho, thumb-friendly */
+.mobile-config-footer {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: stretch;
+  gap: 0.6rem;
+  padding-top: 1.25rem;
+}
+
+.mobile-config-footer .config-saved-msg {
+  justify-content: center;
+}
