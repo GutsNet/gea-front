@@ -7,6 +7,7 @@ import MapaView from '@src/views/MapaView.vue';
 import ConfiguracionView from '@src/views/ConfiguracionView.vue';
 import CuentaView from '@src/views/CuentaView.vue';
 import { authGuard } from './guards';
+import EstudiantesView from "../views/EstudiantesView.vue";
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -52,6 +53,11 @@ const routes = [
     component: CuentaView,
     meta: { layout: 'default', requiresAuth: true },
   },
+    path: '/estudiantes',
+    name: 'Estudiantes',
+    component: EstudiantesView,
+    meta: { layout: 'default', requiresAuth: true },
+  }
 ];
 
 const router = createRouter({
