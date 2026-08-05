@@ -1,25 +1,18 @@
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@400;500;600;700;800;900&display=swap');
+
+* {
+  font-family: 'Gabarito', sans-serif !important;
+}
+
 .cuenta-view {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
   width: 100%;
   min-height: 100%;
-}
-
-/* La vista de escritorio y la de móvil son dos bloques de markup
-   independientes (mismo patrón que .desktop-topbar / .mobile-layout en
-   DefaultLayout.vue), alternados por CSS según el breakpoint de 880px
-   ya usado en toda la app. */
-.cuenta-mobile-only {
-  display: none;
-}
-
-.cuenta-desktop-only {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  flex: 1 1 auto;
-  min-height: 0;
 }
 
 .cuenta-loading {
@@ -191,7 +184,7 @@
   color: #8a8a8a;
 }
 
-/* ---------- Actividad reciente (ahora a todo el ancho) ---------- */
+/* ---------- Actividad reciente ---------- */
 .cuenta-activity {
   width: 100%;
   flex: 1 1 auto;
@@ -287,7 +280,7 @@
   flex-shrink: 0;
 }
 
-/* ---------- Cerrar sesión ---------- */
+/* ---------- Logout ---------- */
 .cuenta-logout-btn {
   display: flex;
   align-items: center;
@@ -315,7 +308,7 @@
   margin: 0.5rem 0 1rem;
 }
 
-/* ---------- Vista móvil ---------- */
+/* ---------- Estilos específicos para móvil ---------- */
 .cuenta-role-text {
   margin: 0 0 0.35rem;
   font-weight: 600;
@@ -407,21 +400,7 @@
 }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 880px) {
-  .cuenta-desktop-only {
-    display: none;
-  }
-
-  .cuenta-mobile-only {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .cuenta-footer-brand {
-    display: none;
-  }
-
+@media (max-width: 960px) {
   .cuenta-profile {
     flex-direction: column;
     align-items: flex-start;
@@ -445,5 +424,9 @@
 
   .cuenta-activity-time {
     align-self: flex-start;
+  }
+
+  .cuenta-footer-brand {
+    display: none;
   }
 }
