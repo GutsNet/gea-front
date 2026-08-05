@@ -53,11 +53,12 @@ const routes = [
     component: CuentaView,
     meta: { layout: 'default', requiresAuth: true },
   },
+  {
     path: '/estudiantes',
     name: 'Estudiantes',
     component: EstudiantesView,
     meta: { layout: 'default', requiresAuth: true },
-  }
+  },
 ];
 
 const router = createRouter({
