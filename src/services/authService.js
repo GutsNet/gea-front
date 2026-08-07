@@ -28,7 +28,22 @@ export function isAuthenticated() {
 export function hasRole(...roles) {
   const user = getStoredUser();
   if (!user) return false;
-  return roles.includes(user.rol);
+  // Permitir alias usados en el frontend (root/admin/user) y los nombres
+  // exactos del backend (Root/Administrativo/Estudiante).
+  const aliasMap = {
+    root: 'Root',
+    admin: 'Administrativo',
+    user: 'Estudiante',
+  };
+
+  const normalized = roles.flatMap((r) => {
+    if (!r) return [];
+    if (aliasMap[r]) return [r, aliasMap[r]];
+    // Acepta también coincidencias por capitalización (e.g., 'root' vs 'Root')
+    return [r, r.charAt(0).toUpperCase() + r.slice(1)];
+  });
+
+  return normalized.includes(user.rol);
 }
 
 export function getRememberedMatricula() {

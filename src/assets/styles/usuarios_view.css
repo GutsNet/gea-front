@@ -1,0 +1,122 @@
+/*
+G.E.A. Frontend
+Estilos de la vista Usuarios (en construcción)
+Estructura idéntica a dashboard_view.css
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@400;500;600;700;800;900&display=swap');
+
+* {
+  font-family: 'Gabarito', sans-serif !important;
+}
+
+/* ---------- Shared ---------- */
+.usuarios-main {
+  --usuarios-primary: #10b981;
+  --usuarios-muted: #64748b;
+  --usuarios-border: #e2e8f0;
+  --usuarios-bg: #f8fafc;
+
+  min-height: 100vh;
+  background-color: var(--usuarios-bg);
+  font-family: 'Gabarito', sans-serif !important;
+  color: #334155;
+}
+
+/*
+   DESKTOP LAYOUT (≥960px)
+*/
+@media (min-width: 960px) {
+  .usuarios-desktop {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+  }
+
+  .construction-content {
+    text-align: center;
+    max-width: 420px;
+  }
+
+  .construction-icon-wrap {
+    width: 88px;
+    height: 88px;
+    margin: 0 auto 24px;
+    border-radius: 50%;
+    background: #f4f7f5;
+    border: 3px solid var(--usuarios-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .construction-icon {
+    width: 40px;
+    height: 40px;
+    color: var(--usuarios-primary);
+  }
+
+  .construction-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+  }
+
+  .construction-text {
+    color: var(--usuarios-muted);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+}
+
+/*
+   MOBILE LAYOUT (<960px)
+*/
+@media (max-width: 959px) {
+  .usuarios-mobile {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+  }
+
+  .construction-content {
+    text-align: center;
+    max-width: 320px;
+  }
+
+  .construction-icon-wrap {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: #f4f7f5;
+    border: 2px solid var(--usuarios-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .construction-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--usuarios-primary);
+  }
+
+  .construction-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 10px;
+  }
+
+  .construction-text {
+    color: var(--usuarios-muted);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}   
