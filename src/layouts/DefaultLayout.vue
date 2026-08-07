@@ -25,7 +25,7 @@
 
         <nav class="mobile-nav">
           <router-link
-            v-for="item in navItems"
+            v-for="item in filteredNavItems"
             :key="item.to"
             :to="item.to"
             class="mobile-nav-item"
@@ -46,11 +46,7 @@
           </div>
           <div class="mobile-user-info">
             <p class="mobile-user-matricula">{{ user.matricula }}</p>
-            <p class="mobile-user-rol">
-              <span v-if="user.rol === 'root'">Sysadmin (root)</span>
-              <span v-else-if="user.rol === 'admin'">Coordinador</span>
-              <span v-else-if="user.rol === 'user'">Brigadista</span>
-            </p>
+            <p class="mobile-user-rol">{{ userRoleLabel }}</p>
           </div>
           <button type="button" class="mobile-logout-btn" @click="handleLogout">
             <svg viewBox="0 0 24 24" class="icon" fill="none" stroke="currentColor" stroke-width="2"
@@ -82,7 +78,7 @@
 
       <nav class="desktop-nav">
         <router-link
-          v-for="item in navItems"
+          v-for="item in filteredNavItems"
           :key="item.to"
           :to="item.to"
           class="desktop-nav-item"
@@ -136,11 +132,7 @@
           </span>
           <span class="desktop-user-info">
             <span class="desktop-user-matricula">{{ user.matricula }}</span>
-            <span class="desktop-user-rol">
-              <span v-if="user.rol === 'root'">Sysadmin (root)</span>
-              <span v-else-if="user.rol === 'admin'">Coordinador</span>
-              <span v-else-if="user.rol === 'user'">Brigadista</span>
-            </span>
+            <span class="desktop-user-rol">{{ userRoleLabel }}</span>
           </span>
           <svg viewBox="0 0 24 24" class="desktop-chevron" :class="{ 'desktop-chevron-open': userMenuOpen }" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -177,7 +169,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { getStoredUser, logout } from '../services/authService';
+import { getStoredUser, logout, hasRole } from '../services/authService';
 
 import logoGea from '../assets/images/logo-gea.png';
 
@@ -209,20 +201,41 @@ function handleLogout() {
   router.push('/login');
 }
 
-// Menú completo (usado en el sidebar de escritorio y en el drawer móvil)
+// Menú completo con la propiedad 'roles' asignada
 const navItems = [
-  { to: '/dashboard', label: 'Dashboard', icon: 'home', subtitle: 'Vista general del estado fitosanitario de la zona' },
-  { to: '/mapa', label: 'Mapa del Campus', icon: 'map', subtitle: 'Visualización y gestión del estado fitosanitario de la zona' },
-  { to: '/reportes', label: 'Reportes', icon: 'fileText', subtitle: 'Consulta y gestión de los reportes del estado de los árboles' },
-  { to: '/arboles', label: 'Árboles', icon: 'leaf', subtitle: 'Inventario y gestión de los árboles de la zona' },
-  { to: '/estudiantes', label: 'Estudiantes', icon: 'users', subtitle: 'Consulta y gestión de los estudiantes participantes' },
-  { to: '/recoleccion', label: 'Recolección (kg)', icon: 'trash', subtitle: 'Registro y gestión de la recolección de biomasa' },
-  { to: '/usuarios', label: 'Usuarios', icon: 'users', subtitle: 'Consulta y gestión de los usuarios del sistema' },
-  { to: '/configuracion', label: 'Configuración', icon: 'settings', subtitle: 'Configuración del sistema' },
+  { to: '/dashboard', label: 'Dashboard', icon: 'home', subtitle: 'Vista general del estado fitosanitario de la zona', roles: ['root', 'admin', 'user'] },
+  { to: '/mapa', label: 'Mapa del Campus', icon: 'map', subtitle: 'Visualización y gestión del estado fitosanitario de la zona', roles: ['root', 'admin', 'user'] },
+  { to: '/reportes', label: 'Reportes', icon: 'fileText', subtitle: 'Consulta y gestión de los reportes del estado de los árboles', roles: ['root', 'admin', 'user'] },
+  { to: '/arboles', label: 'Árboles', icon: 'leaf', subtitle: 'Inventario y gestión de los árboles de la zona', roles: ['root', 'admin', 'user'] },
+  
+  // Elementos con visibilidad restringida
+  { to: '/estudiantes', label: 'Estudiantes', icon: 'users', subtitle: 'Consulta y gestión de los estudiantes participantes', roles: ['root', 'admin'] },
+  { to: '/recoleccion', label: 'Recolección (kg)', icon: 'trash', subtitle: 'Registro y gestión de la recolección de biomasa', roles: ['root', 'admin'] },
+  { to: '/usuarios', label: 'Usuarios', icon: 'users', subtitle: 'Consulta y gestión de los usuarios del sistema', roles: ['root'] },
+  { to: '/configuracion', label: 'Configuración', icon: 'settings', subtitle: 'Configuración del sistema', roles: ['root', 'admin'] },
 ];
 
+// Computed que filtra los elementos del menú dependiendo del rol del usuario activo
+const filteredNavItems = computed(() => {
+  if (!user.value) return [];
+
+  return navItems.filter((item) => {
+    if (!item.roles) return true; // Por defecto lo muestra si no tiene restricción
+    return item.roles.some((r) => hasRole(r));
+  });
+});
+
+const userRoleLabel = computed(() => {
+  const r = (user.value?.rol || '').toString();
+  if (!r) return '';
+  const low = r.toLowerCase();
+  if (low.includes('root')) return 'Sysadmin (root)';
+  if (low.includes('admin') || low.includes('administrativo')) return 'Coordinador';
+  return 'Brigadista';
+});
+
 const currentNavItem = computed(() =>
-  navItems.find((item) => route.path === item.to || route.path.startsWith(item.to + '/'))
+  filteredNavItems.value.find((item) => route.path === item.to || route.path.startsWith(item.to + '/'))
 );
 const currentTitle = computed(() => route.meta?.title || currentNavItem.value?.label || route.name || 'GEA');
 const currentSubtitle = computed(() => route.meta?.subtitle || currentNavItem.value?.subtitle);
@@ -263,4 +276,4 @@ const icons = {
 };
 </script>
 
-<style src="../assets/styles/default_layout.css" scoped></style>
+<style src="@src/assets/styles/default_layout.css" scoped></style>
