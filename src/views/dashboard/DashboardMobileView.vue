@@ -1,7 +1,7 @@
 <!--
 G.E.A. Frontend
-Layout móvil del Dashboard. Se monta únicamente cuando el ancho de
-pantalla está bajo el breakpoint (ver DashboardWrapper.vue).
+Layout móvil del Dashboard ("Resumen"). Se monta únicamente cuando el
+ancho de pantalla está bajo el breakpoint (ver DashboardWrapper.vue).
 
 Usa el mismo composable useDashboard() que DashboardDesktopView.vue,
 así que ambos layouts muestran siempre los mismos números — no hay
@@ -9,142 +9,114 @@ una fuente de datos "de escritorio" y otra "de móvil" por separado.
 
 IMPORTANTE: esta vista se monta DENTRO de <main class="content">
 <slot /></main> de DefaultLayout.vue. DefaultLayout.vue ya provee:
-  - topbar con botón de menú (abre el drawer real)
+  - topbar verde con botón de menú y título "Resumen" (según la ruta)
   - drawer con navegación completa
   - bottom-tabbar con router-link real (Mapa / Resumen / Reportes / Cuenta)
-Por eso este componente NO debe traer su propio app-bar, botón de
-menú ni bottom-navigation: eso ya existe un nivel arriba y usa
-router-link de verdad. Repetirlo aquí solo crea una segunda barra
-que no navega a ningún lado, porque cualquier evento que emitiera
-(@toggle-menu, @ir-mapa, etc.) no tiene quién lo escuche —
-DashboardWrapper.vue monta <DashboardMobileView /> sin listeners.
- -->
+Por eso este componente NO trae su propio app-bar ni bottom-navigation:
+eso ya existe un nivel arriba y usa router-link de verdad. Repetirlo
+aquí solo crearía una segunda barra decorativa que no navega a ningún
+lado (los @click="$emit(...)" del mock original no tienen quién los
+escuche una vez montado dentro de DashboardWrapper.vue).
+
+Usa componentes de Vuetify (v-card, v-icon) para el contenido, igual
+que en el mock recibido — Vuetify ya está registrado globalmente en
+main.js, así que no hace falta importarlo aquí.
+
+NOTA sobre "(Esta semana)": el backend no expone un corte semanal para
+este resumen (ver comentarios de useDashboard.js sobre no inventar
+tendencias que no existen como dato real), así que el subtítulo usa
+"Totales del sistema" en vez del texto literal del mock. Si más
+adelante el backend agrega un endpoint de rango de fechas, este
+subtítulo es el único lugar que hay que tocar.
+
+NOTA sobre la dona: el mock solo distingue 3 niveles (No visible /
+Ligera / Severa), a diferencia del dashboard de escritorio que además
+separa "En revisión". Aquí se respeta el diseño del mock: se muestran
+solo esos 3 segmentos, pero el número central ("Total") sigue siendo
+el total real de árboles (infestacion.total), para que coincida con
+la tarjeta de "Árboles-reportes registrados" de arriba. Si en algún
+momento existen árboles "En revisión", no tendrán segmento propio en
+esta vista (quedarán fuera del arco, igual que en el mock).
+-->
 
 <template>
   <div class="dashboard-mobile">
     <!-- Estados de carga y error -->
-    <div v-if="loading" class="loading-state">Cargando dashboard...</div>
-    <div v-else-if="error" class="error-state">{{ error }}</div>
+    <div v-if="loading" class="dm-state-text">Cargando dashboard...</div>
+    <v-alert v-else-if="error" type="error" variant="tonal" density="comfortable" class="mb-4">
+      {{ error }}
+    </v-alert>
 
     <template v-else>
-      <!-- Encabezado con última actualización + refrescar -->
-      <div class="dm-header">
-        <p class="dm-update-text">
-          Última actualización: {{ formatUltimaActualizacion(lastUpdated) }}
-        </p>
-        <button
-          type="button"
-          class="dm-refresh-btn"
-          :disabled="loading"
-          @click="refrescar"
-          aria-label="Refrescar dashboard"
-        >
-          <svg viewBox="0 0 24 24" class="dm-icon" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="23 4 23 10 17 10" />
-            <polyline points="1 20 1 14 7 14" />
-            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-          </svg>
-        </button>
-      </div>
-
       <!-- TARJETA 1: Resumen general -->
-      <section class="dm-card">
-        <h2 class="dm-card-title">Resumen general</h2>
-        <p class="dm-card-subtitle">(Totales del sistema)</p>
+      <v-card variant="outlined" class="mb-4 rounded-xl dm-border px-4 py-4 elevation-0">
+        <h2 class="text-h6 font-weight-black text-black dm-tight">Resumen general</h2>
+        <p class="text-body-2 text-grey-darken-1 mb-4 font-weight-medium">(Totales del sistema)</p>
 
-        <!-- Fila 1: Reportes registrados -->
-        <div class="dm-row">
-          <div class="dm-icon-box">
-            <svg viewBox="0 0 24 24" class="dm-icon" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z" />
-              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-            </svg>
+        <!-- Fila 1: Árboles-reportes registrados -->
+        <v-card variant="outlined" class="mb-3 rounded-lg dm-border px-3 py-2 d-flex align-center dm-gap-3 elevation-0">
+          <div class="dm-icon-box bg-green-darken-3 rounded-lg d-flex align-center justify-center">
+            <v-icon color="white" size="28">mdi-tree-outline</v-icon>
           </div>
           <div>
-            <div class="dm-row-label">Reportes registrados</div>
-            <div class="dm-row-value">{{ resumen.arbolesRegistrados }}</div>
-            <div class="dm-row-caption">{{ resumen.validados }} validados · {{ resumen.rechazados }} rechazados</div>
+            <div class="text-body-2 font-weight-medium text-grey-darken-3">Árboles-reportes registrados</div>
+            <div class="text-h5 font-weight-black text-black dm-tight">{{ resumen.arbolesRegistrados }}</div>
           </div>
-        </div>
+        </v-card>
 
         <!-- Fila 2: Niveles severos -->
-        <div class="dm-row">
-          <div class="dm-icon-box">
-            <svg viewBox="0 0 24 24" class="dm-icon" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
+        <v-card variant="outlined" class="mb-3 rounded-lg dm-border px-3 py-2 d-flex align-center dm-gap-3 elevation-0">
+          <div class="dm-icon-box bg-green-darken-3 rounded-lg d-flex align-center justify-center">
+            <v-icon color="white" size="28">mdi-alert-box-outline</v-icon>
           </div>
           <div>
-            <div class="dm-row-label">Niveles severos</div>
-            <div class="dm-row-value">{{ resumen.nivelesSeveros }}</div>
-            <div class="dm-row-caption">{{ infestacion.severa.pct }}% del total de árboles</div>
+            <div class="text-body-2 font-weight-medium text-grey-darken-3">Niveles severos</div>
+            <div class="text-h5 font-weight-black text-black dm-tight">{{ resumen.nivelesSeveros }}</div>
           </div>
-        </div>
+        </v-card>
 
         <!-- Fila 3: Kg recolectados -->
-        <div class="dm-row dm-row-last">
-          <div class="dm-icon-box">
-            <svg viewBox="0 0 24 24" class="dm-icon" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-              <path d="M9 6V4a3 3 0 0 1 6 0v2" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-            </svg>
+        <v-card variant="outlined" class="rounded-lg dm-border px-3 py-2 d-flex align-center dm-gap-3 elevation-0">
+          <div class="dm-icon-box bg-green-darken-3 rounded-lg d-flex align-center justify-center">
+            <v-icon color="white" size="28">mdi-sack</v-icon>
           </div>
           <div>
-            <div class="dm-row-label">Kg recolectados</div>
-            <div class="dm-row-value">{{ resumen.kgRecolectados }} kg</div>
-            <div class="dm-row-caption">Total histórico acumulado</div>
+            <div class="text-body-2 font-weight-medium text-grey-darken-3">Kg recolectados</div>
+            <div class="text-h5 font-weight-black text-black dm-tight">{{ resumen.kgRecolectados }} kg</div>
           </div>
-        </div>
-      </section>
+        </v-card>
+      </v-card>
 
       <!-- TARJETA 2: Árboles por nivel de infestación -->
-      <section class="dm-card">
-        <h2 class="dm-card-title dm-card-title-spaced">Árboles por nivel de infestación</h2>
+      <v-card variant="outlined" class="rounded-xl dm-border px-4 py-5 elevation-0">
+        <h2 class="text-h6 font-weight-black text-black mb-5 dm-tight">Árboles por nivel de infestación</h2>
 
-        <div class="dm-donut-row">
+        <div class="d-flex align-center justify-space-between pl-2 pr-1">
           <!-- Gráfica de dona dinámica -->
-          <div class="dm-donut" :style="{ background: gradientDona }">
-            <div class="dm-donut-hole">
-              <span class="dm-donut-label">Total</span>
-              <span class="dm-donut-value">{{ infestacion.total }}</span>
+          <div class="dm-donut position-relative d-flex align-center justify-center" :style="{ background: gradientDona }">
+            <div class="dm-donut-hole bg-white rounded-circle d-flex flex-column align-center justify-center">
+              <span class="text-caption font-weight-bold text-grey-darken-2 mb-n1">Total</span>
+              <span class="text-h6 font-weight-black text-black dm-tight">{{ infestacion.total }}</span>
             </div>
           </div>
 
-          <!-- Leyenda: mismas 4 categorías y colores que desktop -->
-          <div class="dm-legend">
-            <div class="dm-legend-item">
-              <span class="dm-legend-dot" style="background:#22c55e"></span>
-              <span>No visible ({{ infestacion.noVisible.count }})</span>
+          <!-- Leyenda -->
+          <div class="d-flex flex-column dm-gap-2">
+            <div class="d-flex align-center">
+              <v-icon color="#4CAF50" size="14" class="mr-2">mdi-circle</v-icon>
+              <span class="text-caption font-weight-medium text-grey-darken-3">0 - No visible ({{ infestacion.noVisible.count }})</span>
             </div>
-            <div class="dm-legend-item">
-              <span class="dm-legend-dot" style="background:#eab308"></span>
-              <span>Ligera ({{ infestacion.ligera.count }})</span>
+            <div class="d-flex align-center">
+              <v-icon color="#FFCA28" size="14" class="mr-2">mdi-circle</v-icon>
+              <span class="text-caption font-weight-medium text-grey-darken-3">3.5 - Ligera ({{ infestacion.ligera.count }})</span>
             </div>
-            <div class="dm-legend-item">
-              <span class="dm-legend-dot" style="background:#ef4444"></span>
-              <span>Severa ({{ infestacion.severa.count }})</span>
-            </div>
-            <div class="dm-legend-item">
-              <span class="dm-legend-dot" style="background:#a855f7"></span>
-              <span>En revisión ({{ infestacion.enRevision.count }})</span>
+            <div class="d-flex align-center">
+              <v-icon color="#E53935" size="14" class="mr-2">mdi-circle</v-icon>
+              <span class="text-caption font-weight-medium text-grey-darken-3">7.5 - Severa ({{ infestacion.severa.count }})</span>
             </div>
           </div>
         </div>
-
-        <div class="dm-indice-row">
-          <span class="dm-indice-label">Índice de afectación</span>
-          <span :class="['dm-badge', indiceAfectacion.badgeClass]">
-            {{ indiceAfectacion.pct }}% · {{ indiceAfectacion.label }}
-          </span>
-        </div>
-      </section>
+      </v-card>
     </template>
   </div>
 </template>
@@ -155,53 +127,32 @@ import { useDashboard } from '@src/composables/useDashboard';
 
 // Mismo composable que usa DashboardDesktopView.vue: misma fuente de
 // datos, mismos números, sin lógica duplicada.
-const {
-  resumen,
-  infestacion,
-  indiceAfectacion,
-  donutChart,
-  loading,
-  error,
-  lastUpdated,
-  refrescar,
-} = useDashboard();
+const { resumen, infestacion, loading, error } = useDashboard();
 
-const formatUltimaActualizacion = (fecha) => {
-  if (!fecha) return '—';
-  return new Intl.DateTimeFormat('es-MX', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(fecha);
-};
-
-// === GRÁFICA DE DONA: mismos 4 segmentos y colores que donutChart ===
-// (No visible / Ligera / Severa / En revisión), calculados a partir de
-// infestacion.value en vez de recalcular Hawksworth a mano aquí.
+// === GRÁFICA DE DONA: 3 segmentos (No visible / Ligera / Severa) ===
+// calculados a partir de infestacion.value en vez de recalcular
+// Hawksworth a mano aquí. El denominador es infestacion.total (todos
+// los árboles), así que si existieran árboles "En revisión" el arco
+// no cerraría el círculo completo — coincide con que el mock no les
+// da segmento propio en esta vista.
 const gradientDona = computed(() => {
   if (infestacion.value.total === 0) return 'conic-gradient(#E0E0E0 0% 100%)';
 
-  const [noVisible, ligera, severa, enRevision] = donutChart.value.series;
-  const [colorNoVisible, colorLigera, colorSevera, colorRevision] = donutChart.value.colors;
-  const total = infestacion.value.total;
-
+  const { noVisible, ligera, severa, total } = infestacion.value;
   const pct = (n) => (n / total) * 100;
-  const limite1 = pct(noVisible);
-  const limite2 = limite1 + pct(ligera);
-  const limite3 = limite2 + pct(severa);
+
+  const limiteSano = pct(noVisible.count);
+  const limiteLigero = limiteSano + pct(ligera.count);
+  const limiteSevero = limiteLigero + pct(severa.count);
 
   return `conic-gradient(
-    ${colorNoVisible} 0% ${limite1}%,
-    ${colorLigera} ${limite1}% ${limite2}%,
-    ${colorSevera} ${limite2}% ${limite3}%,
-    ${colorRevision} ${limite3}% 100%
+    #4CAF50 0% ${limiteSano}%,
+    #FFCA28 ${limiteSano}% ${limiteLigero}%,
+    #E53935 ${limiteLigero}% ${limiteSevero}%,
+    #E0E0E0 ${limiteSevero}% 100%
   )`;
 });
 </script>
-
-<style src="@src/assets/styles/dashboard_view.css" scoped></style>
 
 <style scoped>
 /* Este componente solo pinta CONTENIDO. La navegación (topbar, drawer,
@@ -210,188 +161,29 @@ const gradientDona = computed(() => {
 .dashboard-mobile {
   max-width: 480px;
   margin: 0 auto;
-  padding: 0 4px 24px;
 }
 
-.loading-state,
-.error-state {
+.dm-state-text {
   padding: 32px 8px;
   text-align: center;
   color: #616161;
 }
 
-/* Encabezado */
-.dm-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-.dm-update-text {
-  font-size: 12px;
-  color: #757575;
-  margin: 0;
-}
-.dm-refresh-btn {
-  border: none;
-  background: transparent;
-  color: #2f7e32;
-  padding: 6px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-.dm-refresh-btn:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-.dm-icon {
-  width: 20px;
-  height: 20px;
-}
+.dm-tight { line-height: 1.1; }
+.dm-border { border: 1.5px solid #e0e0e0 !important; }
+.dm-icon-box { width: 48px; height: 48px; min-width: 48px; }
+.dm-gap-3 { gap: 12px; }
+.dm-gap-2 { gap: 8px; }
 
-/* Tarjetas */
-.dm-card {
-  border: 1.5px solid #e0e0e0;
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 16px;
-  background: #fff;
-}
-.dm-card-title {
-  font-size: 17px;
-  font-weight: 800;
-  color: #000;
-  line-height: 1.1;
-  margin: 0;
-}
-.dm-card-title-spaced {
-  margin-bottom: 20px;
-}
-.dm-card-subtitle {
-  font-size: 13px;
-  color: #616161;
-  font-weight: 500;
-  margin: 2px 0 16px;
-}
-
-/* Filas de resumen */
-.dm-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border: 1.5px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 10px 12px;
-  margin-bottom: 12px;
-}
-.dm-row-last {
-  margin-bottom: 0;
-}
-.dm-icon-box {
-  width: 48px;
-  height: 48px;
-  min-width: 48px;
-  border-radius: 10px;
-  background: #1b5e20;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.dm-row-label {
-  font-size: 13px;
-  font-weight: 500;
-  color: #424242;
-}
-.dm-row-value {
-  font-size: 20px;
-  font-weight: 800;
-  color: #000;
-  line-height: 1.1;
-}
-.dm-row-caption {
-  font-size: 12px;
-  color: #757575;
-}
-
-/* Dona + leyenda */
-.dm-donut-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 4px;
-}
+/* Gráfica de dona */
 .dm-donut {
   width: 130px;
   height: 130px;
   border-radius: 50%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   transition: background 0.3s ease;
 }
 .dm-donut-hole {
   width: 70px;
   height: 70px;
-  border-radius: 50%;
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.dm-donut-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: #424242;
-  margin-bottom: -2px;
-}
-.dm-donut-value {
-  font-size: 17px;
-  font-weight: 800;
-  color: #000;
-  line-height: 1.1;
-}
-.dm-legend {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.dm-legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  font-weight: 500;
-  color: #424242;
-}
-.dm-legend-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-/* Índice de afectación */
-.dm-indice-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 16px;
-  padding: 0 4px;
-}
-.dm-indice-label {
-  font-size: 12px;
-  color: #757575;
-}
-.dm-badge {
-  font-size: 12px;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 999px;
 }
 </style>

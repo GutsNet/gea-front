@@ -4,8 +4,8 @@
     <div class="mobile-layout">
       <header class="mobile-topbar">
         <button type="button" class="icon-btn" @click="drawerOpen = true" aria-label="Abrir menú">
-          <svg viewBox="0 0 24 24" class="icon" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" v-html="icons.menu"></svg>
+          <!-- <svg viewBox="0 0 24 24" class="icon" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" v-html="icons.menu"></svg> -->
         </button>
         <h2 class="mobile-title">{{ currentTitle }}</h2>
         <span class="mobile-topbar-spacer"></span>
@@ -245,6 +245,7 @@ const mobileTabs = [
   { to: '/mapa', label: 'Mapa', icon: 'map' },
   { to: '/dashboard', label: 'Resumen', icon: 'grid' },
   { to: '/reportes', label: 'Reportes', icon: 'fileText' },
+  { to: '/arboles', label: 'Árboles', icon: 'leaf' },
   { to: '/cuenta', label: 'Cuenta', icon: 'userCircle' },
 ];
 
